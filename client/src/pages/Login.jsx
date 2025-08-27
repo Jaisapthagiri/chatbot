@@ -3,7 +3,6 @@ import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 
 const Login = () => {
-
   const [state, setState] = useState("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,6 +11,28 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // 🔹 Common validations
+    if (!email || !password || (state === "register" && !name)) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    // 🔹 Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // 🔹 Password validation (applies for both login & register)
+    // At least 8 characters, includes letter, number, and special char
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error("Password must be 8+ chars, include a letter, number & special character");
+      return;
+    }
+
     const url = state === "login" ? '/api/user/login' : '/api/user/register'
 
     try {
@@ -62,4 +83,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;
